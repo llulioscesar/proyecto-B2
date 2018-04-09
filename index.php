@@ -1,4 +1,10 @@
 <?php
+header('Access-Control-Allow-Origin: *');
+header('Cache-Control: no-cache, must-revalidate');
+header('Content-type: application/json');
+
+require ('vendor/autoload.php');
+
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
@@ -32,30 +38,8 @@ $container['db'] = function ($c) {
     return $pdo;
 };
 
-$app->get('/tickets', function (Request $request, Response $response) {
-    $this->logger->addInfo("Ticket list");
-    $mapper = new TicketMapper($this->db);
-    $tickets = $mapper->getTickets();
-
-    $response->getBody()->write(var_export($tickets, true));
-    return $response;
-});
-
-$app->get('/ticket/{id}', function (Request $request, Response $response, $args) {
-    $ticket_id = (int)$args['id'];
-    $mapper = new TicketMapper($this->db);
-    $ticket = $mapper->getTicketById($ticket_id);
-
-    $response->getBody()->write(var_export($ticket, true));
-    return $response;
-});
-
-$app->get('/hello/{name}', function (Request $request, Response $response, array $args) {
-    $name = $args['name'];
-    $response->getBody()->write("Hello, $name");
-
-    return $response;
-});
+include "rutas/acudiente.php";
+include "rutas/entrar.php";
 
 $app->run();
 ?>

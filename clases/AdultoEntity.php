@@ -1,6 +1,6 @@
 <?php
 
-class AdultosEntity
+class AdultoEntity
 {
 
   protected $id;
@@ -11,7 +11,7 @@ class AdultosEntity
   protected $correo;
   protected $tipo;
   protected $user;
-  protected $contraseña;
+  protected $password;
 
   function __construct(array $data)
   {
@@ -23,7 +23,7 @@ class AdultosEntity
     $this->correo = $data['correo'];
     $this->tipo = $data['tipo'];
     $this->user = $data['user'];
-    $this->contraseña = $data['contraseña'];
+    $this->password = $data['password'];
   }
 
   public function getId() {
@@ -58,8 +58,12 @@ class AdultosEntity
     return $this->user;
   }
 
-  public function getContraseña() {
-    return $this->contraseña;
+  public function getPassword() {
+    return $this->password;
+  }
+
+  public function explode() {
+    return get_object_vars($this);
   }
 }
 
