@@ -62,10 +62,10 @@ $app->post("/api/adulto/id", function (Request $request, Response $response) {
 
 
 
-$app->put("/api/acudiente/modificar", function (Request $request, Response $response) {
+$app->post("/api/acudiente/modificar", function (Request $request, Response $response) {
   $mapper = new AdultoMapper($this->db);
   $args = $request->getParsedBody();
-  $res = $mapper->setAdulto($args);
+  $res = $mapper->actualizarAdulto($args);
   return $response->withJson($res, 201);
 });
 

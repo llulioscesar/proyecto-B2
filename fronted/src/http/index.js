@@ -7,6 +7,8 @@ const getCategoriaId = url + 'categoria/id';
 const buscarAcudiente = url + 'acudiente/search';
 const buscarCategoria = url + 'categoria/search';
 const actualizarAlumno = url + 'alumno/set';
+const cambiarEstadoAlumno = url+ 'alumno/estado';
+const actualizarAdulto = url + 'acudiente/modificar'
 
 export  {
   entrar,
@@ -15,5 +17,7 @@ export  {
   getCategoriaId,
   buscarAcudiente,
   buscarCategoria,
-  actualizarAlumno
+  actualizarAlumno,
+  cambiarEstadoAlumno,
+  actualizarAdulto
 }

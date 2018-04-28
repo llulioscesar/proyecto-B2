@@ -2,8 +2,10 @@
   <q-page >
     <q-tabs>
       <!-- Tabs - notice slot="title" -->
-      <q-tab default slot="title" name="tab-1" icon="book" label="Inscripciones" />
-      <q-tab slot="title" name="tab-2" icon="description" label="Reportes"/>
+      <q-tab default slot="title" name="tab-1" icon="book" label="Inscripciones y reportes" />
+      <q-tab slot="title" name="tab-2" icon="description" label="Profesores"/>
+      <q-tab slot="title" name="tab-2" icon="description" label="Categorias"/>
+      <q-tab slot="title" name="tab-2" icon="description" label="Canchas"/>
       <q-tab slot="title" name="tab-3" icon="store_mall_directory" label="Escuela"/>
 
       <!-- Targets -->

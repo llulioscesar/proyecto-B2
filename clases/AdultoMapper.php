@@ -145,6 +145,41 @@ class AdultoMapper extends Mapper
     return $json;
   }
 
+  public function actualizarAdulto($data) {
+    $json = array('estado' => true, 'datos' => null, 'error' => null);
+    $sql = "UPDATE adultos  SET documento = :documento, nombre = :nombre, direccion = :direccion, telefono = :telefono, correo = :correo,
+      tipo = :tipo, user = :user, estado = :estado
+      WHERE id = :id";
+    try {
+      if (isset($data['documento']) && isset($data['nombre']) && isset($data['direccion']) &&
+              isset($data['telefono']) && isset($data['correo']) && isset($data['tipo'])
+              && isset($data['user']) && isset($data['id']) && isset($data['estado'])) {
+
+            $stmt = $this->db->prepare($sql);
+            $result = $stmt->execute([
+            "id" => $data['id'],
+            "documento" => $data['documento'],
+            "nombre" => $data['nombre'],
+            "direccion" => $data['direccion'],
+            "telefono" => $data['telefono'],
+            "correo" => $data['correo'],
+            "tipo" => $data['tipo'],
+            "user" => $data['user'],
+            "estado" => $data['estado']
+            ]);
+            $json['datos'] = true;
+          }else{
+              $json['estado'] = false;
+              $json['error'] = "Campo requerido";
+          }
+      }
+      catch(PDOException $e) {
+          $json['estado'] = false;
+          $json['error'] = $e->getMessage();
+      }
+      return $json;
+  }
+
 
 
 

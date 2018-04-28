@@ -8,8 +8,8 @@
         <q-item-main>
           <q-item-tile>
             {{acudiente.nombre}}
-            <q-btn round color="white" class="text-black" icon="remove_red_eye" size="10px" />
-            <q-btn round color="white" class="text-black" icon="border_color" size="10px" />
+            <q-btn @click.native="verAcudiente(i)" round color="white" class="text-black" icon="remove_red_eye" size="10px" />
+            <q-btn @click.native="editarAcudiente(i)" round color="white" class="text-black" icon="border_color" size="10px" />
             <q-btn round color="white" class="text-red" icon="close" size="10px" />
           </q-item-tile>
           <q-list link class="no-border">
@@ -21,7 +21,7 @@
                 <q-icon :class="hijo.estado ? 'text-blue' : 'text-red'" name="check" size="14px" />
                 <q-btn round @click.native="openURL('http://localhost/futbol/api/alumno/pdf?idAlumno='+hijo.id)" class="text-faded" icon="insert_drive_file" size="10px" />
                 <q-btn round @click.native="editarHijo(i,j)" class="text-faded" icon="border_color" size="10px" />
-                <q-btn round class="text-red" icon="close" size="10px" />
+                <q-btn v-if="hijo.estado" @click.native="borraAlumno(i, j)" round class="text-red" icon="close" size="10px" />
               </q-item-side>
             </q-item>
             <q-item-separator />
@@ -89,12 +89,56 @@
       </div>
     </q-modal>
 
+    <q-modal minimized :content-css="{width:'550px'}"  no-backdrop-dismiss no-esc-dismiss ref="modalRef3">
+      <q-btn style="position: absolute;margin-left: 8px;margin-top: 8px;" @click.native="$refs.modalRef3.hide()" round color="red" icon="close" size="7px"/>
+      <div style="padding:35px 50px" v-if="lista != null">
+        <div class="q-display-1 q-mb-md">{{lista[acudiente].nombre}}</div>
+        <hr>
+        <q-field label="Documento:">{{lista[acudiente].documento}}</q-field>
+        <q-field label="Correo:">{{lista[acudiente].tipoSangre}}</q-field>
+        <q-field label="Direccion:">{{lista[acudiente].direccion}}</q-field>
+        <q-field label="Telefono:">{{lista[acudiente].telefono}}</q-field>
+        <q-field label="Estado:">{{lista[acudiente].estado}}</q-field>
+        <q-field label="Usuario:">{{lista[acudiente].user}}</q-field>
+      </div>
+    </q-modal>
+
+    <q-modal minimized  :content-css="{width:'550px'}" no-backdrop-dismiss no-esc-dismiss ref="modalRef4">
+      <q-btn style="position: absolute;margin-left: 8px;margin-top: 8px;" @click.native="$refs.modalRef4.hide()" round color="red" icon="close" size="7px"/>
+      <div style="padding:35px 50px" v-if="lista != null">
+        <q-field label="Nombre:">
+          <q-input v-model="lista[acudiente].nombre" type="text" class="text-black"/>
+        </q-field>
+        <q-field label="Documento:">
+          <q-input v-model="lista[acudiente].documento" type="text"/>
+        </q-field>
+        <q-field label="Correo:">
+          <q-input v-model="lista[acudiente].correo" type="email"/>
+        </q-field>
+        <q-field label="Direccion:">
+          <q-input v-model="lista[acudiente].dirrecion" type="text"/>
+        </q-field>
+        <q-field label="Telefono:">
+          <q-input v-model="lista[acudiente].telefono" type="text"/>
+        </q-field>
+        <q-field label="Usuario:">
+          <q-input v-model="lista[acudiente].user" type="text"/>
+        </q-field>
+        <q-field label="Estado:">
+          <q-checkbox v-model="lista[acudiente].estado"/>
+        </q-field>
+        <br>
+        <hr>
+        <q-btn @click.native="updateAcudiente" color="primary">Guardar</q-btn>
+      </div>
+    </q-modal>
+
   </div>
 </template>
 
 <script>
 import { filter, openURL } from 'quasar'
-import { acudientesHijos, getAlumnoId, getCategoriaId, buscarAcudiente, buscarCategoria, actualizarAlumno } from 'src/http';
+import { acudientesHijos, getAlumnoId, getCategoriaId, buscarAcudiente, buscarCategoria, actualizarAlumno, cambiarEstadoAlumno } from 'src/http';
 
 function filtrarAcudiente(data){
   return data.map(acudiente => {
@@ -142,7 +186,8 @@ export default {
         categoria: null
       },
       buscarCategoria: null,
-      buscarAcudiente: null
+      buscarAcudiente: null,
+      acudiente: 0
     }
   },
   methods: {
@@ -165,6 +210,10 @@ export default {
         console.log(e);
       })
     },
+    verAcudiente(pos) {
+      this.acudiente = pos
+      this.$refs.modalRef3.show()
+    },
     editarHijo (i, j) {
       this.hijo = JSON.parse(JSON.stringify(this.lista[i].hijos[j]))
       this.buscarAcudiente = JSON.parse(JSON.stringify(this.lista[i].nombre))
@@ -183,6 +232,10 @@ export default {
       }).catch(e => {
         console.log(e);
       })
+    },
+    editarAcudiente(pos){
+      this.acudiente = pos
+      this.$refs.modalRef4.show()
     },
     searchAcudiente(termino, done){
       var form = new FormData()
@@ -243,6 +296,33 @@ export default {
         }
       })
     },
+    updateAcudiente(post) {
+      var form =new FormData()
+      form.set("id", this.lista[pos].id)
+      form.set("nombre", this.lista[pos].nombre)
+      form.set("documento", this.lista[pos].documento)
+      form.set("direccion", this.lista[pos].direccion)
+      form.set("telefono", this.lista[pos].telefono)
+      form.set("correo", this.lista[pos].correo)
+      form.set("tipo", "2")
+      form.set("user", this.lista[pos].user)
+      form.set("estado", this.lista[pos].estado ? "1" : "0")
+      this.$axios({
+        method: "post",
+        url: actualizarAcudiente,
+        data: form,
+        processData: false
+      }).then(res => {
+        if(res.data.estado) {
+          
+        } else {
+          this.$q.dialog({
+            title: "Error",
+            message: res.data.error
+          })
+        }
+      })
+    }
     cargarLista () {
       this.$refs.modalRef1.hide()
       this.$axios({
@@ -252,6 +332,26 @@ export default {
         console.log(res.data);
         if (res.data.estado) {
           this.lista = res.data.datos
+        }
+      }).catch(e => {
+
+      })
+    },
+    borraAlumno (pos, hijo) {
+      var hijo = JSON.parse(JSON.stringify(this.lista[pos].hijos[hijo]))
+      console.log(hijo);
+      var form = new FormData();
+      form.set("estado", hijo.estado ? "0" : "1")
+      form.set("idAlumno", hijo.id)
+      this.$axios({
+        method: "post",
+        url: cambiarEstadoAlumno,
+        data: form,
+        processData: false
+      }).then(res => {
+        console.log(res.data);
+        if(res.data.estado){
+          this.cargarLista()
         }
       }).catch(e => {
 
