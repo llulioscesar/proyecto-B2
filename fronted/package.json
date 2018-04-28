@@ -11,10 +11,14 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "electron-pdf-window": "^1.0.12",
     "electron-squirrel-startup": "^1.0.0",
     "electron-winstaller": "^2.6.4",
     "moment": "^2.22.0",
-    "vue-moment": "^3.2.0"
+    "vue-instant-pdf-viewer": "^1.0.2",
+    "vue-moment": "^3.2.0",
+    "vue-momentjs": "^0.1.2",
+    "vue-pdf": "^3.2.2"
   },
   "devDependencies": {
     "devtron": "1.4.0",

@@ -12,6 +12,7 @@ class AdultoEntity
   protected $tipo;
   protected $user;
   protected $password;
+  protected $estado;
 
   function __construct(array $data)
   {
@@ -24,6 +25,7 @@ class AdultoEntity
     $this->tipo = $data['tipo'];
     $this->user = $data['user'];
     $this->password = $data['password'];
+    $this->estado = boolval($data['estado']);
   }
 
   public function getId() {
@@ -47,7 +49,7 @@ class AdultoEntity
   }
 
   public function getCorreo() {
-    return $this->correo();
+    return $this->correo;
   }
 
   public function getTipo() {
@@ -60,6 +62,10 @@ class AdultoEntity
 
   public function getPassword() {
     return $this->password;
+  }
+
+  public function getEstado() {
+    return $this->estado;
   }
 
   public function explode() {

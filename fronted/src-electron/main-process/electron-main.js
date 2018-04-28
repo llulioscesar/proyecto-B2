@@ -1,4 +1,5 @@
 import { app, BrowserWindow } from 'electron'
+const PDFWindow = require('electron-pdf-window')
 
 /**
  * Set `__statics` path to static files in production;
@@ -19,11 +20,13 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     width: 1000,
     height: 600,
-    minHeight: 728,
+    minHeight: 600,
     minWidth:1280,
     useContentSize: true,
-    webPreferences: { experimentalFeatures: true }
+    webPreferences: { experimentalFeatures: true },
   })
+
+  //PDFWindow.addSupport(mainWindow)
 
   mainWindow.loadURL(process.env.APP_URL)
 

@@ -40,6 +40,9 @@ $container['db'] = function ($c) {
 
 include "rutas/acudiente.php";
 include "rutas/entrar.php";
+include "rutas/alumno.php";
+include "rutas/profesor.php";
+include "rutas/categoria.php";
 
 $app->run();
 ?>

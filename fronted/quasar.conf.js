@@ -91,7 +91,8 @@ module.exports = function (ctx) {
       ],
       directives: [
         'Ripple',
-        'BackToTop'
+        'BackToTop',
+        'CloseOverlay'
       ],
       // Quasar plugins
       plugins: [
