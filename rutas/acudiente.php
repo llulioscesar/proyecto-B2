@@ -21,6 +21,13 @@ $app->post("/api/acudiente/id", function (Request $request, Response $response) 
   return $response->withJson($res, 201);
 });
 
+$app->post("/api/cuenta", function (Request $request, Response $response) {
+  $mapper = new AdultoMapper($this->db);
+  $args = $request->getParsedBody();
+  $res = $mapper->getCuentaById($args);
+  return $response->withJson($res, 201);
+});
+
 $app->post("/api/acudiente/name", function (Request $request, Response $response) {
   $mapper = new AdultoMapper($this->db);
   $args = $request->getParsedBody();

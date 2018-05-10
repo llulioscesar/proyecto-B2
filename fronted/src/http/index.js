@@ -16,6 +16,8 @@ const actualizarCategoria = url + 'categoria/set'
 const insertarCategoria = url + 'categoria/save'
 const allProfesores = url + 'profesor/all'
 
+const getCuenta = url + 'cuenta'
+
 export  {
   entrar,
   acudientesHijos,
@@ -31,5 +33,6 @@ export  {
   allCategorias,
   actualizarCategoria,
   insertarCategoria,
-  allProfesores
+  allProfesores,
+  getCuenta
 }

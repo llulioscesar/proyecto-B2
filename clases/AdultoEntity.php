@@ -14,7 +14,7 @@ class AdultoEntity
   protected $password;
   protected $estado;
 
-  function __construct(array $data)
+  function __construct($data)
   {
     $this->id = $data['id'];
     $this->documento = $data['documento'];

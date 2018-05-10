@@ -51,9 +51,8 @@ export default {
               case "0":
                 this.$router.push("admin");
                 break;
-              case "1":
-                break;
-              case "2":
+              default:
+                this.$router.push("usuario")
                 break;
             }
           } else {

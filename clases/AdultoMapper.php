@@ -45,6 +45,26 @@ class AdultoMapper extends Mapper
     return $json;
   }
 
+  public function getCuentaById($data) {
+    $json = array('estado' => true, 'datos' => null, 'error' => null);
+    $sql = "SELECT * FROM adultos WHERE (id = :idAcudiente)" ;
+    try {
+      if (isset($data['idAcudiente'])) {
+        $result = $this->db->prepare($sql);
+        $result->execute(["idAcudiente" => $data['idAcudiente']]);
+        $json['datos'] = (new AdultoEntity($result->fetch()))->explode();
+      }else{
+        $json['estado'] = false;
+        $json['error'] = "Campo requerido";
+      }
+    }
+    catch(PDOException $e) {
+      $json['estado'] = false;
+      $json['error'] = $e->getMessage();
+    }
+    return $json;
+  }
+
   // route "/api/acudiente/name"
   public function getAcudienteByName($data) {
     $json = array('estado' => true, 'datos' => null, 'error' => null);
@@ -170,7 +190,7 @@ class AdultoMapper extends Mapper
             $json['datos'] = true;
           }else{
               $json['estado'] = false;
-              $json['error'] = "Campo requerido";
+              $json['error'] = "Campo fg requerido";
           }
       }
       catch(PDOException $e) {
