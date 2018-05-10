@@ -306,7 +306,14 @@ class AdultoMapper extends Mapper
     $sql = "INSERT INTO adultos (documento, nombre, direccion, telefono, correo, tipo, user, password, estado) VALUES
         (:documento, :nombre, :direccion, :telefono, :correo, :tipo, :user, :password, 1)";
     try {
-      if(isset($data['documento']) && isset($data['nombre']) && isset($data['direccion']) && isset($data['telefono']) && isset($data['correo']) && isset($data['tipo']) && isset($data['user']) && isset($data['password'])){
+      if(isset($data['documento']) &&
+          isset($data['nombre']) &&
+          isset($data['direccion']) &&
+          isset($data['telefono']) &&
+          isset($data['correo']) &&
+          isset($data['tipo']) &&
+          isset($data['user']) &&
+          isset($data['password'])){
         $stmt = $this->db->prepare($sql);
         $result = $stmt->execute([
             "documento" => $data['documento'],

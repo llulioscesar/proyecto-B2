@@ -4,14 +4,13 @@
       <q-list-header>
         Profesores
       </q-list-header>
-      <q-item v-for="(categoria, i) in categorias" v-if="categorias != null">
-          <q-item-side inverted :letter="categoria.nombre.substring(0, 1)" color="secondary" />
+      <q-item v-for="(profe, i) in profesores" v-if="profesores != null">
+          <q-item-side inverted :letter="profe.nombre.substring(0, 1)" color="secondary" />
           <q-item-main>
-            <q-item-tile>{{categoria.nombre}}</q-item-tile>
-            <q-item-tile>${{categoria.valor}}</q-item-tile>
+            <q-item-tile>{{profe.nombre}}</q-item-tile>
           </q-item-main>
           <q-item-side right>
-            <q-icon :class="categoria.estado ? 'text-blue' : 'text-red'" name="check" size="14px" />
+            <q-icon :class="profe.estado ? 'text-blue' : 'text-red'" name="check" size="14px" />
             <q-btn round @click.native="editar(i)" class="text-faded" icon="border_color" size="10px" />
           </q-item-side>
       </q-item>
@@ -24,34 +23,61 @@
 
     <q-modal minimized  :content-css="{width:'550px'}" no-backdrop-dismiss no-esc-dismiss ref="modalRef1">
       <q-btn style="position: absolute;margin-left: 8px;margin-top: 8px;" @click.native="$refs.modalRef1.hide()" round color="red" icon="close" size="7px"/>
-      <div style="padding:35px 50px">
+      <div style="padding:35px 50px" v-if="profesor != null">
         <q-field label="Nombre:">
-          <q-input v-model="categoria.nombre" type="text" class="text-black"/>
+          <q-input v-model="profesor.nombre" type="text" class="text-black"/>
         </q-field>
-        <q-field label="Valor:">
-          <q-input v-model="categoria.valor" type="number"/>
+        <q-field label="Documento:">
+          <q-input v-model="profesor.documento" type="text"/>
+        </q-field>
+        <q-field label="Correo:">
+          <q-input v-model="profesor.correo" type="email"/>
+        </q-field>
+        <q-field label="Direccion:">
+          <q-input v-model="profesor.dirrecion" type="text"/>
+        </q-field>
+        <q-field label="Telefono:">
+          <q-input v-model="profesor.telefono" type="text"/>
+        </q-field>
+        <q-field label="Usuario:">
+          <q-input v-model="profesor.user" type="text"/>
         </q-field>
         <q-field label="Estado:">
-          <q-checkbox v-model="categoria.estado"/>
+          <q-checkbox v-model="profesor.estado"/>
         </q-field>
         <br>
         <hr>
-        <q-btn @click.native="updateCategoria" color="primary">Guardar</q-btn>
+        <q-btn @click.native="updateProfesor()" color="primary">Guardar</q-btn>
       </div>
     </q-modal>
 
     <q-modal minimized  :content-css="{width:'550px'}" no-backdrop-dismiss no-esc-dismiss ref="modalRef2">
       <q-btn style="position: absolute;margin-left: 8px;margin-top: 8px;" @click.native="$refs.modalRef2.hide()" round color="red" icon="close" size="7px"/>
-      <div style="padding:35px 50px">
+      <div style="padding:35px 50px" v-if="profesores != null">
         <q-field label="Nombre:">
-          <q-input v-model="categoria.nombre" type="text" class="text-black"/>
+          <q-input v-model="profesor.nombre" type="text" class="text-black"/>
         </q-field>
-        <q-field label="Valor:">
-          <q-input v-model="categoria.valor" type="number"/>
+        <q-field label="Documento:">
+          <q-input v-model="profesor.documento" type="text"/>
+        </q-field>
+        <q-field label="Correo:">
+          <q-input v-model="profesor.correo" type="email"/>
+        </q-field>
+        <q-field label="Direccion:">
+          <q-input v-model="profesor.dirrecion" type="text"/>
+        </q-field>
+        <q-field label="Telefono:">
+          <q-input v-model="profesor.telefono" type="text"/>
+        </q-field>
+        <q-field label="Usuario:">
+          <q-input v-model="profesor.user" type="text"/>
+        </q-field>
+        <q-field label="Contraseña:">
+          <q-input v-model="profesor.password" type="text"/>
         </q-field>
         <br>
         <hr>
-        <q-btn @click.native="addCategoria" color="primary">Guardar</q-btn>
+        <q-btn @click.native="addProfesor()" color="primary">Guardar</q-btn>
       </div>
     </q-modal>
 
@@ -61,16 +87,13 @@
 </template>
 
 <script>
-import { allCategorias, actualizarCategoria, insertarCategoria } from 'src/http'
+import { allProfesores, actualizarAdulto, insertarAdulto } from 'src/http'
 export default {
   data () {
     return {
-      categorias:null,
-      categoria: {
-        nombre: null,
-        valor: null,
-        id: null,
-        estado: null
+      profesores:null,
+      profesor: {
+        nombre: null
       }
     }
   },
@@ -83,27 +106,32 @@ export default {
     cargarLista(){
       this.$axios({
         method: 'post',
-        url: allCategorias
+        url: allProfesores
       }).then(res => {
         if( res.data.estado) {
-          this.categorias = res.data.datos
+          this.profesores = res.data.datos
+          console.log(this.profesores);
         }
       })
     },
     editar(pos) {
-      this.categoria = JSON.parse(JSON.stringify(this.categorias[pos]))
+      this.profesor = JSON.parse(JSON.stringify(this.profesores[pos]))
       this.$refs.modalRef1.show()
     },
-    updateCategoria(){
+    updateProfesor(){
       var form = new FormData()
-      form.set("idCategoria", this.categoria.id)
-      form.set("nombre", this.categoria.nombre)
-      form.set("valor", this.categoria.valor)
-      form.set("estado", this.categoria.estado ? '1' : '0')
-      form.set("profesor", null)
+      form.set("id", this.profesor.id)
+      form.set("nombre", this.profesor.nombre)
+      form.set("documento", this.profesor.documento)
+      form.set("direccion", this.profesor.direccion)
+      form.set("telefono", this.profesor.telefono)
+      form.set("correo", this.profesor.correo)
+      form.set("tipo", "1")
+      form.set("user", this.profesor.user)
+      form.set("estado", (this.profesor.estado ? "1" : "0"))
       this.$axios({
         method: "post",
-        url: actualizarCategoria,
+        url: actualizarAdulto,
         data: form
       }).then(res => {
         if(res.data.estado){
@@ -113,23 +141,35 @@ export default {
       })
     },
     nuevo(){
-      this.categoria = {
+      this.profesor = {
         nombre: null,
-        valor: null,
-        id: null,
-        estado: null
+        documento: null,
+        direccion: null,
+        telefono: null,
+        correo: null,
+        user: null,
+        password: null
       }
       this.$refs.modalRef2.show()
     },
-    addCategoria() {
+    addProfesor() {
+      console.log(this.profesor);
       var form = new FormData()
-      form.set("nombre", this.categoria.nombre)
-      form.set("valor", this.categoria.valor)
+      form.set("nombre", this.profesor.nombre)
+      form.set("documento", this.profesor.documento)
+      form.set("direccion", this.profesor.direccion)
+      form.set("telefono", this.profesor.telefono)
+      form.set("correo", this.profesor.correo)
+      form.set("tipo", "1")
+      form.set("user", this.profesor.user)
+      form.set("password", this.profesor.password)
       this.$axios({
         method: "post",
-        url: insertarCategoria,
-        data: form
+        url: insertarAdulto,
+        data: form,
+        processData: false
       }).then(res => {
+        console.log(res);
         if(res.data.estado){
           this.cargarLista()
           this.$refs.modalRef2.hide()

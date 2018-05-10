@@ -14,6 +14,7 @@ const nuevoAlumno = url + 'alumno/save'
 const allCategorias = url +'categoria/all'
 const actualizarCategoria = url + 'categoria/set'
 const insertarCategoria = url + 'categoria/save'
+const allProfesores = url + 'profesor/all'
 
 export  {
   entrar,
@@ -29,5 +30,6 @@ export  {
   nuevoAlumno,
   allCategorias,
   actualizarCategoria,
-  insertarCategoria
+  insertarCategoria,
+  allProfesores
 }
