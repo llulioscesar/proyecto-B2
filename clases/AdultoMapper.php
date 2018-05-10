@@ -301,24 +301,32 @@ class AdultoMapper extends Mapper
     return $json;
   }
 
-  public function save(AdultoEntity $adulto) {
-      //print_r($adulto);
-      /*$sql = "INSERT INTO adultos (documento, nombre, direccion, telefono, correo, tipo, user, password) VALUES
-          (:documento, :nombre, :direccion, :telefono, :correo, :tipo, :user, :password)";
-      $stmt = $this->db->prepare($sql);
-      $result = $stmt->execute([
-          "documento" => $adulto->getDocumento(),
-          "nombre" => $adulto->getNombre(),
-          "direccion" => $adulto->getDireccion(),
-          "telefono" => $adulto->getTelefono(),
-          "correo" => $adulto->getCorreo(),
-          "tipo" => $adulto->getTipo(),
-          "user" => $adulto->getUser(),
-          "password" => $adulto->getpassword()
-      ]);
-      if(!$result) {
-          throw new Exception("No pudo guardar el registro");
-      }*/
+  public function save($data) {
+    $json = array('estado' => true, 'datos' => null, 'error' => null);
+    $sql = "INSERT INTO adultos (documento, nombre, direccion, telefono, correo, tipo, user, password, estado) VALUES
+        (:documento, :nombre, :direccion, :telefono, :correo, :tipo, :user, :password, 1)";
+    try {
+      if(isset($data['documento']) && isset($data['nombre']) && isset($data['direccion']) && isset($data['telefono']) && isset($data['correo']) && isset($data['tipo']) && isset($data['user']) && isset($data['password'])){
+        $stmt = $this->db->prepare($sql);
+        $result = $stmt->execute([
+            "documento" => $data['documento'],
+            "nombre" => $data['nombre'],
+            "direccion" => $data['direccion'],
+            "telefono" => $data['telefono'],
+            "correo" => $data['correo'],
+            "tipo" => $data['tipo'],
+            "user" => $data['user'],
+            "password" => Bcrypt::hashPassword($data['password'], 10)
+        ]);
+        $json['estado'] = true;
+      } else {
+        $json['estado'] = false;
+        $json['error'] = "Campos requeridos";
+      }
+    } catch (PDOException $e) {
+      $json['estado'] = false;
+      $json['error'] = $e->getMessage();
+    }
   }
 
 

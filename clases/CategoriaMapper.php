@@ -56,15 +56,14 @@ class CategoriaMapper extends Mapper
   // route "api/categoria/save"
   public function saveCategoria($data) {
       $json = array('estado' => true, 'datos' => null, 'error' => null);
-      $sql = "INSERT INTO categorias (nombre, valor, profesor) VALUES
-          (:nombre, :valor, :profesor)";
+      $sql = "INSERT INTO categorias (nombre, valor, estado) VALUES
+          (:nombre, :valor, 1)";
       try{
-          if (isset($data['nombre']) && isset($data['valor']) && isset($data['profesor']) ) {
+          if (isset($data['nombre']) && isset($data['valor'])) {
               $stmt = $this->db->prepare($sql);
               $result = $stmt->execute([
               "nombre" => $data['nombre'],
-              "valor" => $data['valor'],
-              "profesor" => $data['profesor'],
+              "valor" => $data['valor']
               ]);
               $json['datos'] = true;
           }else{
@@ -158,16 +157,15 @@ class CategoriaMapper extends Mapper
   // route "/api/categoria/set"
   public function setCategoria($data) {
     $json = array('estado' => true, 'datos' => null, 'error' => null);
-    $sql = "UPDATE categorias  SET nombre = :nombre, valor = :valor , profesor = :profesor WHERE id = :idCategoria";
+    $sql = "UPDATE categorias  SET nombre = :nombre, valor = :valor, estado = :estado WHERE id = :idCategoria";
     try {
-      if (isset($data['idCategoria']) && isset($data['nombre']) && isset($data['valor'])
-          && isset($data['profesor']) ) {
+      if (isset($data['idCategoria']) && isset($data['nombre']) && isset($data['valor'])) {
             $result = $this->db->prepare($sql);
             $result->execute([
             "idCategoria"=> $data['idCategoria'],
             "nombre" => $data['nombre'],
             "valor" => $data['valor'],
-            "profesor" => $data['profesor']
+            "estado" => $data['estado']
             ]);
             $json['datos'] = true;
          }else {

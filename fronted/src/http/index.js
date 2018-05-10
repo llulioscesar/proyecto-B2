@@ -9,6 +9,11 @@ const buscarCategoria = url + 'categoria/search';
 const actualizarAlumno = url + 'alumno/set';
 const cambiarEstadoAlumno = url+ 'alumno/estado';
 const actualizarAdulto = url + 'acudiente/modificar'
+const insertarAdulto = url + 'acudiente/insertar'
+const nuevoAlumno = url + 'alumno/save'
+const allCategorias = url +'categoria/all'
+const actualizarCategoria = url + 'categoria/set'
+const insertarCategoria = url + 'categoria/save'
 
 export  {
   entrar,
@@ -19,5 +24,10 @@ export  {
   buscarCategoria,
   actualizarAlumno,
   cambiarEstadoAlumno,
-  actualizarAdulto
+  actualizarAdulto,
+  insertarAdulto,
+  nuevoAlumno,
+  allCategorias,
+  actualizarCategoria,
+  insertarCategoria
 }

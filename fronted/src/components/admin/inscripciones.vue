@@ -1,16 +1,18 @@
 <template>
-  <div class="content">
+  <div class="content shadow-2" style="margin-top:24px; border-radius:5px">
     {{hijo.busCategoria}}
     <q-list inset-separator>
       <q-list-header>Acudientes</q-list-header>
-      <q-item v-for="(acudiente, i) in lista" :key="i">
+      <q-item v-for="(acudiente, i) in lista" :key="i" v-if="acudiente.documento != null && acudiente.nombre != null">
         <q-item-side inverted :letter="acudiente.nombre.substring(0, 1)" color="secondary" />
         <q-item-main>
           <q-item-tile>
             {{acudiente.nombre}}
+            <q-icon :class="acudiente.estado ? 'text-blue' : 'text-red'" name="check" size="14px" />
             <q-btn @click.native="verAcudiente(i)" round color="white" class="text-black" icon="remove_red_eye" size="10px" />
-            <q-btn @click.native="editarAcudiente(i)" round color="white" class="text-black" icon="border_color" size="10px" />
-            <q-btn round color="white" class="text-red" icon="close" size="10px" />
+            <q-btn @click.native="editarAcudiente(i, false)" round color="white" class="text-black" icon="border_color" size="10px" />
+            <q-btn @click.native="editarAcudiente(i, true)" round color="white" class="text-red" icon="close" size="10px" />
+            <q-btn @click.native="addHijo(i)" round color="white" class="text-black" icon="add" size="10px" />
           </q-item-tile>
           <q-list link class="no-border">
             <q-list-header>Hijos</q-list-header>
@@ -31,6 +33,10 @@
       <q-item-separator />
       <!--<q-list-header>acudiente</q-list-header>-->
     </q-list>
+
+    <q-page-sticky position="bottom-right" :offset="[18, 18]">
+      <q-btn @click.native="nuevoAcudiente" round color="primary" icon="add" />
+    </q-page-sticky>
 
 
     <q-modal minimized  :content-css="{width:'550px'}" no-backdrop-dismiss no-esc-dismiss ref="modalRef1">
@@ -129,7 +135,74 @@
         </q-field>
         <br>
         <hr>
-        <q-btn @click.native="updateAcudiente" color="primary">Guardar</q-btn>
+        <q-btn @click.native="updateAcudiente(acudiente, false  )" color="primary">Guardar</q-btn>
+      </div>
+    </q-modal>
+
+    <q-modal minimized  :content-css="{width:'550px'}" no-backdrop-dismiss no-esc-dismiss ref="modalRef5">
+      <q-btn style="position: absolute;margin-left: 8px;margin-top: 8px;" @click.native="$refs.modalRef5.hide()" round color="red" icon="close" size="7px"/>
+      <div style="padding:35px 50px" v-if="lista != null">
+        <q-field label="Nombre:">
+          <q-input v-model="lista[acudiente].nombre" type="text" class="text-black"/>
+        </q-field>
+        <q-field label="Documento:">
+          <q-input v-model="lista[acudiente].documento" type="text"/>
+        </q-field>
+        <q-field label="Correo:">
+          <q-input v-model="lista[acudiente].correo" type="email"/>
+        </q-field>
+        <q-field label="Direccion:">
+          <q-input v-model="lista[acudiente].dirrecion" type="text"/>
+        </q-field>
+        <q-field label="Telefono:">
+          <q-input v-model="lista[acudiente].telefono" type="text"/>
+        </q-field>
+        <q-field label="Usuario:">
+          <q-input v-model="lista[acudiente].user" type="text"/>
+        </q-field>
+        <q-field label="contraseña:">
+          <q-input v-model="lista[acudiente].password" type="password"/>
+        </q-field>
+        <br>
+        <hr>
+        <q-btn @click.native="addAcudiente(acudiente)" color="primary">Guardar</q-btn>
+      </div>
+    </q-modal>
+
+    <q-modal minimized  :content-css="{width:'550px'}" no-backdrop-dismiss no-esc-dismiss ref="modalRef6">
+      <q-btn style="position: absolute;margin-left: 8px;margin-top: 8px;" @click.native="$refs.modalRef6.hide()" round color="red" icon="close" size="7px"/>
+      <div style="padding:35px 50px">
+        <q-field label="Nombre:">
+          <q-input v-model="hijo.nombre" type="text" class="text-black"/>
+        </q-field>
+        <q-field label="Documento:">
+          <q-input v-model="hijo.documento" type="text"/>
+        </q-field>
+        <q-field label="Fecha de nacimiento:">
+          <q-datetime v-model="hijo.fechaNacimiento" type="date"/>
+        </q-field>
+        <q-field label="Tipo de sangre:">
+          <q-input v-model="hijo.tipoSangre" type="text"/>
+        </q-field>
+        <q-field label="Fecha de ingreso:">
+          <q-datetime v-model="hijo.fechaIngreso" type="date"/>
+        </q-field>
+        <q-field label="Fecha de retiro:">
+          <q-datetime v-model="hijo.fechaRetiro" type="date" clearable popover/>
+        </q-field>
+        <q-field label="Acudiente">
+          <q-search v-model="buscarAcudiente">
+            <q-autocomplete @search="searchAcudiente" @selected="selectedAcudiente" separator/>
+          </q-search>
+        </q-field>
+        <q-field label="Categoria">
+          <q-search v-model="buscarCategoria">
+            <q-autocomplete @search="searchCategoria" @selected="selectedCategoria" />
+          </q-search>
+        </q-field>
+        <br>
+        <hr>
+        <q-btn @click.native="saveHijo(acudiente)" color="primary">Guardar</q-btn>
       </div>
     </q-modal>
 
@@ -138,7 +211,7 @@
 
 <script>
 import { filter, openURL } from 'quasar'
-import { acudientesHijos, getAlumnoId, getCategoriaId, buscarAcudiente, buscarCategoria, actualizarAlumno, cambiarEstadoAlumno } from 'src/http';
+import { acudientesHijos, getAlumnoId, getCategoriaId, buscarAcudiente, buscarCategoria, actualizarAlumno, cambiarEstadoAlumno, actualizarAdulto, insertarAdulto, nuevoAlumno } from 'src/http';
 
 function filtrarAcudiente(data){
   return data.map(acudiente => {
@@ -233,9 +306,13 @@ export default {
         console.log(e);
       })
     },
-    editarAcudiente(pos){
+    editarAcudiente(pos, borrar){
       this.acudiente = pos
-      this.$refs.modalRef4.show()
+      if(!borrar) {
+        this.$refs.modalRef4.show()
+      } else {
+        this.updateAcudiente(pos, true)
+      }
     },
     searchAcudiente(termino, done){
       var form = new FormData()
@@ -296,7 +373,7 @@ export default {
         }
       })
     },
-    updateAcudiente(post) {
+    updateAcudiente(pos, borrar) {
       var form =new FormData()
       form.set("id", this.lista[pos].id)
       form.set("nombre", this.lista[pos].nombre)
@@ -306,15 +383,16 @@ export default {
       form.set("correo", this.lista[pos].correo)
       form.set("tipo", "2")
       form.set("user", this.lista[pos].user)
-      form.set("estado", this.lista[pos].estado ? "1" : "0")
+      form.set("estado", borrar == true ? '0' : (this.lista[pos].estado ? "1" : "0"))
       this.$axios({
         method: "post",
-        url: actualizarAcudiente,
+        url: actualizarAdulto,
         data: form,
         processData: false
       }).then(res => {
         if(res.data.estado) {
-          
+          this.cargarLista()
+          this.$refs.modalRef4.hide()
         } else {
           this.$q.dialog({
             title: "Error",
@@ -322,7 +400,7 @@ export default {
           })
         }
       })
-    }
+    },
     cargarLista () {
       this.$refs.modalRef1.hide()
       this.$axios({
@@ -356,6 +434,79 @@ export default {
       }).catch(e => {
 
       })
+    },
+    nuevoAcudiente() {
+      this.lista.push({
+        nombre: null,
+        documento: null,
+        correo: null,
+        direccion: null,
+        telefono: null,
+        estado: true,
+        usuario: null,
+        password: null,
+        tipo: 2,
+        hijos: []
+      })
+      console.log(this.lista);
+      this.acudiente = this.lista.length - 1
+      this.$refs.modalRef5.show();
+    },
+    addAcudiente(pos) {
+      var form = new FormData()
+      form.set("nombre", this.lista[pos].nombre)
+      form.set("documento", this.lista[pos].documento)
+      form.set("direccion", this.lista[pos].direccion)
+      form.set("telefono", this.lista[pos].telefono)
+      form.set("correo", this.lista[pos].correo)
+      form.set("tipo", "2")
+      form.set("user", this.lista[pos].user)
+      form.set("password", this.lista[pos].password)
+      form.set("estado", "1")
+      this.$axios({
+        method: "post",
+        url: insertarAdulto,
+        data: form,
+        processData: false
+      }).then(res => {
+        if(res.data.estado) {
+          this.cargarLista()
+          this.$refs.modalRef5.hide()
+        } else {
+          this.$q.dialog({
+            title: "Error",
+            message: res.data.error
+          })
+        }
+      })
+    },
+    addHijo(pos) {
+      this.acudiente = pos
+      this.hijo.acudiente = this.lista[pos].id
+      this.buscarAcudiente = this.lista[pos].nombre
+      this.$refs.modalRef6.show()
+    },
+    saveHijo(pos){
+      var form = new FormData()
+      form.set("documento", this.hijo.documento)
+      form.set("nombre", this.hijo.nombre)
+      form.set("fechaNacimiento", this.hijo.fechaNacimiento)
+      form.set("tipoSangre", this.hijo.tipoSangre)
+      form.set("fechaIngreso", this.hijo.fechaIngreso)
+      form.set("fechaRetiro", this.hijo.fechaRetiro)
+      form.set("acudiente", this.hijo.acudiente)
+      form.set("categoria", this.hijo.categoria)
+      this.$axios({
+        method: "post",
+        url: nuevoAlumno,
+        data: form,
+        processData: false
+      }).then(res => {
+        if(res.data.estado) {
+          this.cargarLista()
+          this.$refs.modalRef6.hide()
+        }
+      })
     }
   }
 }
@@ -368,6 +519,7 @@ export default {
   margin: 0 auto;
   max-width: 1110px;
   width: 100%;
+  display: block;
 }
 .q-item-label{
   padding: 15px 0;

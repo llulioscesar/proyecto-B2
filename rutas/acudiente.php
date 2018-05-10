@@ -39,9 +39,8 @@ $app->post("/api/acudiente/search", function (Request $request, Response $respon
 $app->post("/api/acudiente/insertar", function (Request $request, Response $response) {
   $mapper = new AdultoMapper($this->db);
   $args = $request->getParsedBody();
-  //$res = $mapper->save(new AdultoEntity($args));
-  print_r($args);
-  //return $response->withJson($res, 201);
+  $res = $mapper->save($args);
+  return $response->withJson($res, 201);
 });
 
 $app->post("/api/acudiente/hijos", function (Request $request, Response $response) {

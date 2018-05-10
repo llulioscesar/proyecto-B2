@@ -26,8 +26,8 @@ class AlumnoMapper extends Mapper
   // route "api/alumno/save"
   public function saveAlumno($data) {
       $json = array('estado' => true, 'datos' => null, 'error' => null);
-     $sql = "INSERT INTO alumnos (documento, nombre, fechaNacimiento, tipoSangre, fechaIngreso, fechaRetiro, acudiente, categoria) VALUES
-          (:documento, :nombre, :fechaNacimiento, :tipoSangre, :fechaIngreso, :fechaRetiro,:acudiente, :categoria)";
+     $sql = "INSERT INTO alumnos (documento, nombre, fechaNacimiento, tipoSangre, fechaIngreso, fechaRetiro, acudiente, categoria, estado) VALUES
+          (:documento, :nombre, :fechaNacimiento, :tipoSangre, :fechaIngreso, :fechaRetiro,:acudiente, :categoria, 1)";
       try{
           if (isset($data['documento']) && isset($data['nombre']) && isset($data['fechaNacimiento']) &&
               isset($data['tipoSangre']) && isset($data['fechaIngreso']) && isset($data['fechaRetiro'])
@@ -44,7 +44,7 @@ class AlumnoMapper extends Mapper
             "acudiente" => $data['acudiente'],
             "categoria" => $data['categoria']
             ]);
-            $json['datos'] = true;
+            $json['estado'] = true;
           }else{
               $json['estado'] = false;
               $json['error'] = "Campo requerido";
