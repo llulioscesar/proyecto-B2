@@ -8,6 +8,9 @@
       <!--<q-tab slot="title" name="tab-4" icon="description" label="Canchas"/>
       <q-tab slot="title" name="tab-5" icon="store_mall_directory" label="Escuela"/>-->
       <q-tab slot="title" name="tab-6" icon="face" label="Cuenta"/>
+      <q-tab slot="title" name="tab-7" icon="assessment" label="Grafico"/>
+      <q-tab slot="title" name="tab-8" icon="grid_on" label="Excel"/>
+      <q-route-tab icon="exit_to_app" to="/" exact slot="title" label="salir"/>
 
       <!-- Targets -->
       <q-tab-pane class="no-border no-padding" name="tab-1">
@@ -21,6 +24,9 @@
       </q-tab-pane>
       <q-tab-pane name="tab-6">
         <cuenta/>
+      </q-tab-pane>
+      <q-tab-pane name="tab-7">
+
       </q-tab-pane>
     </q-tabs>
   </q-page>

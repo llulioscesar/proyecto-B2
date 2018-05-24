@@ -3,7 +3,7 @@
     <q-tabs>
       <!-- Tabs - notice slot="title" -->
       <q-tab default slot="title" name="tab-1" icon="face" label="cuenta" />
-      <q-tab slot="title" name="tab-2" icon="today" label="Horario"/>
+      <q-route-tab icon="exit_to_app" to="/" exact slot="title" label="salir"/>
 
       <!-- Targets -->
       <q-tab-pane class="no-border no-padding" name="tab-1">
